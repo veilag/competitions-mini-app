@@ -27,6 +27,13 @@ interface CompetitionsStateChangeEvent {
   }
 }
 
+interface GetCompetitionsStateResultEvent {
+  event: "COMPETITIONS:GET_STATE:RESULT",
+  data: {
+    state: CompetitionState
+  }
+}
+
 interface UserPlaceUpdateEvent {
   event: "USERS:PLACE_UPDATE"
 }
@@ -55,6 +62,7 @@ type EventMessage =
   | UserPlaceUpdateEvent
   | UserSetPlaceResultEvent
   | UserGetMeResultEvent
+  | GetCompetitionsStateResultEvent
 
 export type {
   EventMessage,
@@ -64,5 +72,6 @@ export type {
   UserPlaceUpdateEvent,
   UserSetPlaceResultEvent,
   UserGetMeResultEvent,
+  GetCompetitionsStateResultEvent,
   CompetitionsStateChangeEvent
 }

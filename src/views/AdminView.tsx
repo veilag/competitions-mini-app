@@ -151,6 +151,12 @@ const AdminView = () => {
                     <SelectItem className="text-base" value="1">Старт</SelectItem>
                     <SelectItem className="text-base" value="2">Регистрация</SelectItem>
                     <SelectItem className="text-base" value="3">Выполнение заданий</SelectItem>
+                    <SelectItem className="text-base" value="4">Проверка заданий</SelectItem>
+                    <SelectItem className="text-base" value="5">Награждение</SelectItem>
+                    <SelectItem className="text-base" value="6">Завтрак</SelectItem>
+                    <SelectItem className="text-base" value="7">Обед</SelectItem>
+                    <SelectItem className="text-base" value="8">Ужин</SelectItem>
+                    <SelectItem className="text-base" value="9">Завершено</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>
@@ -161,8 +167,7 @@ const AdminView = () => {
 
           <div className="mt-5">
             <p className="font-medium text-lg">Разное</p>
-            <p className="mb-4">Функционал относящийся к разным ролям</p>
-
+            <p className="mb-4">Установить пользователя "На месте"</p>
             <Button onClick={showQrScanner} className="w-full">Сканировать QR-код</Button>
           </div>
         </div>

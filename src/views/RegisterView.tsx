@@ -56,10 +56,14 @@ const RegisterView = () => {
   }, [lastJsonMessage])
 
   useEffect(() => {
-    impactDoubleHaptic("medium")
-    showMainButton("Зарегистрироваться")
-
     webapp.MainButton.onClick(() => {
+      if (nameRef.current?.value === "" || surnameRef.current?.value) {
+        webapp.showPopup({
+          message: "Заполните все поля! Не забудьте выбрать олимпиаду"
+        })
+        return
+      }
+
       sendJsonMessage({
         event: "USERS:REGISTER",
         data: {
@@ -73,6 +77,11 @@ const RegisterView = () => {
       webapp.HapticFeedback.impactOccurred("light")
       webapp.MainButton.showProgress()
     })
+  }, [competitionId, roleId])
+
+  useEffect(() => {
+    impactDoubleHaptic("medium")
+    showMainButton("Зарегистрироваться")
   }, [])
 
   return (

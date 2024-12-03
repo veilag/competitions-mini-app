@@ -14,7 +14,7 @@ const StaffView = () => {
     {
       share: true
     }
-  );
+  )
 
   const showQrScanner = () => {
     webapp.showScanQrPopup({

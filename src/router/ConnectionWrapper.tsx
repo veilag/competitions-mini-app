@@ -4,7 +4,12 @@ import { WS_ROOT } from "@/config/constants"
 import {useEffect, useState} from "react"
 import HyperText from "@/components/ui/hyper-text.tsx";
 import useUserStore from "@/store/user.ts";
-import {CompetitionsStateChangeEvent, EventMessage, UserGetMeResultEvent} from "@/types/sockets.ts";
+import {
+  CompetitionsStateChangeEvent,
+  EventMessage,
+  GetCompetitionsStateResultEvent,
+  UserGetMeResultEvent
+} from "@/types/sockets.ts";
 import {JsonMessageHandler} from "@/utils";
 import {CompetitionState} from "@/types/competitions.ts";
 
@@ -15,9 +20,10 @@ const ConnectionWrapper = () => {
   const navigate = useNavigate()
   const location = useLocation()
 
-  const [status, setStatus] = useState<CompetitionState | undefined>(undefined)
+  const [competitionState, setCompetitionState] = useState<CompetitionState | undefined>(undefined)
 
-  const { lastJsonMessage, sendJsonMessage } = useWebSocket<EventMessage>(
+
+  const { lastJsonMessage, sendJsonMessage } = useWebSocket<EventMessage | null>(
     `${WS_ROOT}/connect_user?token=${encodeURIComponent(
       webapp.initData
     )}`,
@@ -40,9 +46,14 @@ const ConnectionWrapper = () => {
     (location.pathname === "/profile" && "Меню управляющего") || undefined
 
   const color =
-    (status?.type === "registration" && "bg-blue-500") ||
-    (status?.type === "task_solving" && "bg-green-500") ||
-    (status?.type === "start" && "bg-neutral-500") || undefined
+    (competitionState?.type === "registration" && "bg-blue-500") ||
+    (competitionState?.type === "task_solving" && "bg-green-500") ||
+    (competitionState?.type === "start" && "bg-neutral-500") ||
+    (competitionState?.type === "awarding" && "bg-red-500") ||
+    (competitionState?.type === "checking" && "bg-yellow-500") ||
+    (competitionState?.type === "end" && "bg-neutral-500") ||
+    ((competitionState?.type === "lunch" || competitionState?.type === "breakfast" || competitionState?.type === "dinner") && "bg-orange-500") ||
+    undefined
 
   const onUserGetMe = (message: UserGetMeResultEvent) => {
     if (message.status === "error") {
@@ -65,8 +76,8 @@ const ConnectionWrapper = () => {
     navigate("/profile")
   }
 
-  const onStateChange = (message: CompetitionsStateChangeEvent) => {
-    setStatus(message.data.state)
+  const onStateChange = (message: CompetitionsStateChangeEvent | GetCompetitionsStateResultEvent) => {
+    setCompetitionState(message.data.state)
     webapp.HapticFeedback
       .impactOccurred("medium")
   }
@@ -77,6 +88,7 @@ const ConnectionWrapper = () => {
     new JsonMessageHandler(lastJsonMessage)
       .onEvent<UserGetMeResultEvent>("USERS:GET_ME:RESULT", onUserGetMe)
       .onEvent<CompetitionsStateChangeEvent>("COMPETITIONS:STATE_CHANGE", onStateChange)
+      .onEvent("COMPETITIONS:GET_STATE:RESULT", onStateChange)
   }, [lastJsonMessage])
 
   useEffect(() => {
@@ -84,6 +96,11 @@ const ConnectionWrapper = () => {
 
     webapp?.requestFullscreen()
     webapp.HapticFeedback.impactOccurred("medium")
+
+    sendJsonMessage({
+      event: "COMPETITIONS:GET_STATE",
+      data: null
+    })
   }, [])
 
   if (webapp.initData === "") {
@@ -118,10 +135,10 @@ const ConnectionWrapper = () => {
       </div>
     </div>
 
-    {status && (
+    {competitionState && (
       <div className={`w-full text-white py-2 px-4 ${color}`}>
         <HyperText
-          text={status.name}
+          text={competitionState.name}
         />
       </div>
     )}
