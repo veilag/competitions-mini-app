@@ -1,20 +1,16 @@
-"use client";
-
-import { AnimatePresence, motion, Variants } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState, forwardRef } from "react";
-
 import { cn } from "@/lib/utils";
 
 interface HyperTextProps {
   text: string;
   duration?: number;
-  framerProps?: Variants;
   className?: string;
   animateOnLoad?: boolean;
   onAnimationEnd?: () => void;
 }
 
-const alphabets = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+const alphabets = "АБВГДЕËЖЗИЙКЛМНОПРСТИФХЦЧШЩЬЪЭЮЯ".split("");
 
 const getRandomInt = (max: number) => Math.floor(Math.random() * max);
 
@@ -22,20 +18,13 @@ const HyperText = forwardRef(function HyperText(
   {
     text,
     duration = 800,
-    framerProps = {
-      initial: { opacity: 0, y: -10 },
-      animate: { opacity: 1, y: 0 },
-      exit: { opacity: 0, y: 3 },
-    },
     className,
-    animateOnLoad = true,
     onAnimationEnd,
-  }: HyperTextProps,
-  ref
+  }: HyperTextProps
 ) {
   const [displayText, setDisplayText] = useState(text.split(""));
   const interations = useRef(0);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const startAnimation = () => {
     interations.current = 0;
@@ -72,7 +61,9 @@ const HyperText = forwardRef(function HyperText(
           <motion.span
             key={index}
             className={cn("font-mono", letter === " " ? "w-3" : "", className)}
-            {...framerProps}
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 3 }}
           >
             {letter.toUpperCase()}
           </motion.span>

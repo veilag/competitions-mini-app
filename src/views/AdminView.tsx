@@ -5,18 +5,19 @@ import useWebSocket from "react-use-websocket";
 import {WS_ROOT} from "@/config/constants.ts";
 import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select.tsx";
 import {useEffect, useRef, useState} from "react";
-
-const webapp = window.Telegram.WebApp;
+import webapp from "@/webapp";
+import {JsonMessageHandler} from "@/utils";
+import {EventMessage, UserRegisterResult, UserSetPlaceResultEvent} from "@/types/sockets.ts";
 
 const AdminView = () => {
   const [selectedStateId, setSelectedStateId] = useState<number>(0)
+  const [selectedRoleId, setSelectedRoleId] = useState<number>(5)
 
   const telegramIdRef = useRef<HTMLInputElement | null>(null)
   const nameRef = useRef<HTMLInputElement | null>(null)
   const surnameRef = useRef<HTMLInputElement | null>(null)
-  const [selectedRoleId, setSelectedRoleId] = useState<number>(5)
 
-  const { lastJsonMessage, sendJsonMessage } = useWebSocket(
+  const { lastJsonMessage, sendJsonMessage } = useWebSocket<EventMessage | null>(
     `${WS_ROOT}/connect_user?token=${encodeURIComponent(
       webapp.initData
     )}`, {
@@ -28,16 +29,14 @@ const AdminView = () => {
     webapp.showScanQrPopup({
       text: "Сканируйте QR-код участника, не забудьте его поприветствовать"
     }, value => {
-      const public_id = value
 
+      const public_id = value
       sendJsonMessage({
         event: "USERS:SET_IN_PLACE",
         data: {
           public_id
         }
       })
-
-      webapp.closeScanQrPopup()
     })
   }
 
@@ -64,29 +63,31 @@ const AdminView = () => {
     })
   }
 
+  const onUserRegister = (message: UserRegisterResult) => {
+    if (message.status === "success") {
+      webapp.showPopup({
+        message: "Успешная регистрация",
+      })
+    } else {
+      webapp.showPopup({
+        message: "Регистрация провалена"
+      })
+    }
+  }
+
+  const onUserPlaceUpdate = (message: UserSetPlaceResultEvent) => {
+    webapp.showPopup({
+      title: `${message.data.user.surname} ${message.data.user.name}`,
+      message: 'Поприветствуйте участника'
+    })
+  }
+
   useEffect(() => {
     if (lastJsonMessage === null) return
 
-    switch (lastJsonMessage.event) {
-      case "USERS:REGISTER:RESULT":
-        if (lastJsonMessage.status === "success") {
-          webapp.showPopup({
-            message: "Успешная регистрация"
-          })
-        } else {
-          webapp.showPopup({
-            message: "Регистрация провалена"
-          })
-        }
-        break
-
-      case "USERS:SET_IN_PLACE:RESULT":
-        webapp.showPopup({
-          title: "Пользователь вошел",
-          message: `${lastJsonMessage.data.user.surname} ${lastJsonMessage.data.user.name}`
-        })
-        break
-    }
+    new JsonMessageHandler(lastJsonMessage)
+      .onEvent<UserRegisterResult>("USERS:REGISTER:RESULT", onUserRegister)
+      .onEvent<UserSetPlaceResultEvent>("USERS:SET_IN_PLACE:RESULT", onUserPlaceUpdate)
   }, [lastJsonMessage])
 
   useEffect(() => {

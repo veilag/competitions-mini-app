@@ -11,38 +11,53 @@ import {
 } from "@/components/ui/select.tsx";
 import useWebSocket from "react-use-websocket";
 import {WS_ROOT} from "@/config/constants.ts";
-import {useNavigate} from "react-router-dom";
-
-const webapp = window.Telegram.WebApp;
+import webapp from "@/webapp";
+import {impactDoubleHaptic, JsonMessageHandler, showMainButton} from "@/utils";
+import {EventMessage, UserRegisterResult} from "@/types/sockets.ts";
 
 const RegisterView = () => {
-  const navigate = useNavigate()
-
   const nameRef = useRef<HTMLInputElement | null>(null)
   const surnameRef = useRef<HTMLInputElement | null>(null)
 
   const [roleId, setRoleId] = useState<number>(2)
   const [competitionId, setCompetitionId] = useState<number>(1)
 
-  const { lastJsonMessage, sendJsonMessage } = useWebSocket(
-    `${WS_ROOT}/connect_user?token=${encodeURIComponent(
-      webapp.initData
-    )}`,{
-      share: true
-    }
-  );
-
+  const { lastJsonMessage, sendJsonMessage } = useWebSocket<EventMessage | null>(
+    `${WS_ROOT}/connect_user?token=${encodeURIComponent(webapp.initData)}`,
+    {share: true}
+  )
 
   const changeRole = (id: number) => {
     setRoleId(id)
     webapp.HapticFeedback.impactOccurred("light")
   }
 
-  useEffect(() => {
-    webapp.HapticFeedback.impactOccurred("medium")
+  const onUserRegister = (message: UserRegisterResult) => {
+    if (message.status === "error") {
+      webapp.showPopup({message: "Ошибка регистрации"})
+      return
+    }
 
-    webapp.MainButton.setText("Зарегистрироваться")
-    webapp.MainButton.show()
+    sendJsonMessage({
+      event: "USERS:GET_ME",
+      data: null,
+    })
+
+    impactDoubleHaptic("medium")
+    webapp.MainButton.hideProgress()
+    webapp.MainButton.hide()
+  }
+
+  useEffect(() => {
+    if (lastJsonMessage === null) return
+
+    new JsonMessageHandler(lastJsonMessage)
+      .onEvent<UserRegisterResult>("USERS:REGISTER:RESULT", onUserRegister)
+  }, [lastJsonMessage])
+
+  useEffect(() => {
+    impactDoubleHaptic("medium")
+    showMainButton("Зарегистрироваться")
 
     webapp.MainButton.onClick(() => {
       sendJsonMessage({
@@ -59,29 +74,6 @@ const RegisterView = () => {
       webapp.MainButton.showProgress()
     })
   }, [])
-
-  useEffect(() => {
-    if (lastJsonMessage === null) return
-
-    switch (lastJsonMessage.event) {
-      case "USERS:REGISTER:RESULT":
-        if (lastJsonMessage.status === "error") {
-          webapp.showPopup({
-            message: "Ошибка регистрации"
-          })
-        }
-        webapp.HapticFeedback.impactOccurred("medium")
-
-        setTimeout(() => {
-          webapp.HapticFeedback.impactOccurred("medium")
-        }, 100)
-
-        webapp.MainButton.hideProgress()
-        webapp.MainButton.hide()
-        navigate("/profile")
-    }
-
-  }, [lastJsonMessage])
 
   return (
     <div>

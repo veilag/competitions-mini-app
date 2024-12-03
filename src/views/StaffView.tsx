@@ -2,11 +2,12 @@ import {Button} from "@/components/ui/button.tsx";
 import useWebSocket from "react-use-websocket";
 import {WS_ROOT} from "@/config/constants.ts";
 import {useEffect} from "react";
-
-const webapp = window.Telegram.WebApp;
+import webapp from "@/webapp";
+import {JsonMessageHandler} from "@/utils";
+import {EventMessage, UserSetPlaceResultEvent} from "@/types/sockets.ts";
 
 const StaffView = () => {
-  const { lastJsonMessage, sendJsonMessage } = useWebSocket(
+  const { lastJsonMessage, sendJsonMessage } = useWebSocket<EventMessage | null>(
     `${WS_ROOT}/connect_user?token=${encodeURIComponent(
       webapp.initData
     )}`,
@@ -19,30 +20,29 @@ const StaffView = () => {
     webapp.showScanQrPopup({
       text: "Сканируйте QR-код участника, не забудьте его поприветствовать"
     }, value => {
-      const public_id = value
 
+      const public_id = value
       sendJsonMessage({
         event: "USERS:SET_IN_PLACE",
         data: {
           public_id
         }
       })
+    })
+  }
 
-      webapp.closeScanQrPopup()
+  const onUserPlaceUpdate = (message: UserSetPlaceResultEvent) => {
+    webapp.showPopup({
+      title: `${message.data.user.surname} ${message.data.user.name}`,
+      message: 'Поприветствуйте участника'
     })
   }
 
   useEffect(() => {
     if (lastJsonMessage === null) return
 
-    switch (lastJsonMessage.event) {
-      case "USERS:SET_IN_PLACE:RESULT":
-        webapp.showPopup({
-          title: "Пользователь вошел",
-          message: `${lastJsonMessage.data.user.surname} ${lastJsonMessage.data.user.name}`
-        })
-        break
-    }
+    new JsonMessageHandler(lastJsonMessage)
+      .onEvent<UserSetPlaceResultEvent>("USERS:SET_IN_PLACE:RESULT", onUserPlaceUpdate)
   }, [lastJsonMessage])
 
   return (
