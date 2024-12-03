@@ -93,13 +93,13 @@ const RegisterView = () => {
 
         <div className="flex flex-col gap-4 mt-4">
           <div>
-            <Label className="text-base">Имя</Label>
-            <Input className="mt-1"/>
+            <Label htmlFor="name" className="text-base">Имя</Label>
+            <Input id="name" ref={nameRef} className="mt-1"/>
           </div>
 
           <div>
-            <Label className="text-base">Фамилия</Label>
-            <Input className="mt-1"/>
+            <Label htmlFor="surname" className="text-base">Фамилия</Label>
+            <Input id="surname" ref={surnameRef} className="mt-1"/>
           </div>
 
           <div>
@@ -113,9 +113,9 @@ const RegisterView = () => {
 
           {roleId === 2 && (
             <div>
-              <Label className="text-base">Олимпиада</Label>
+              <Label htmlFor="competitions" className="text-base">Олимпиада</Label>
               <Select onValueChange={value => setCompetitionId(parseInt(value))}>
-                <SelectTrigger className="w-full mt-1 text-base">
+                <SelectTrigger id="competitions" className="w-full mt-1 text-base">
                   <SelectValue placeholder="Выбери свою олимпиаду"/>
                 </SelectTrigger>
                 <SelectContent>
