@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {Label} from "@/components/ui/label.tsx";
 import {Input} from "@/components/ui/input.tsx";
 import {
@@ -17,7 +17,12 @@ const webapp = window.Telegram.WebApp;
 
 const RegisterView = () => {
   const navigate = useNavigate()
+
+  const nameRef = useRef<HTMLInputElement | null>(null)
+  const surnameRef = useRef<HTMLInputElement | null>(null)
+
   const [roleId, setRoleId] = useState<number>(2)
+  const [competitionId, setCompetitionId] = useState<number>(1)
 
   const { lastJsonMessage, sendJsonMessage } = useWebSocket(
     `${WS_ROOT}/connect_user?token=${encodeURIComponent(
@@ -43,10 +48,10 @@ const RegisterView = () => {
       sendJsonMessage({
         event: "USERS:REGISTER",
         data: {
-          name: "Рамиль",
-          surname: "Галиев",
-          role_id: 2,
-          competition_id: 1,
+          name: nameRef.current?.value,
+          surname: surnameRef.current?.value,
+          role_id: roleId,
+          competition_id: competitionId,
         }
       })
 
@@ -109,15 +114,15 @@ const RegisterView = () => {
           {roleId === 2 && (
             <div>
               <Label className="text-base">Олимпиада</Label>
-              <Select>
+              <Select onValueChange={value => setCompetitionId(parseInt(value))}>
                 <SelectTrigger className="w-full mt-1 text-base">
                   <SelectValue placeholder="Выбери свою олимпиаду"/>
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    <SelectItem className="text-base" value="apple">Искусственный интеллект</SelectItem>
-                    <SelectItem className="text-base" value="banana">Программные решения</SelectItem>
-                    <SelectItem className="text-base" value="blueberry">Системное программирование</SelectItem>
+                    <SelectItem className="text-base" value="1">Искусственный интеллект</SelectItem>
+                    <SelectItem className="text-base" value="2">Программные решения</SelectItem>
+                    <SelectItem className="text-base" value="3">Системное программирование</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>
