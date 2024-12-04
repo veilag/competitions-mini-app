@@ -57,7 +57,7 @@ const RegisterView = () => {
 
   useEffect(() => {
     webapp.MainButton.onClick(() => {
-      if (nameRef.current?.value === "" || surnameRef.current?.value) {
+      if (nameRef.current?.value === "" || surnameRef.current?.value === "") {
         webapp.showPopup({
           message: "Заполните все поля! Не забудьте выбрать олимпиаду"
         })
