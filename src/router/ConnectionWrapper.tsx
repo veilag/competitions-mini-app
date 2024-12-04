@@ -99,6 +99,11 @@ const ConnectionWrapper = () => {
 
     if (message.data.state.type !== "awarding") {
       if (user?.role.type === "admin") return
+      if (user?.role.type === "staff") {
+        navigate("/staff")
+        return
+      }
+
       navigate("/profile")
     }
   }
