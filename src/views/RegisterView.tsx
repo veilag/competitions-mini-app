@@ -77,6 +77,8 @@ const RegisterView = () => {
       webapp.HapticFeedback.impactOccurred("light")
       webapp.MainButton.showProgress()
     })
+
+    return () => webapp.MainButton.offClick()
   }, [competitionId, roleId])
 
   useEffect(() => {

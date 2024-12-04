@@ -22,7 +22,8 @@ interface BottomButton {
   show: () => void
   showProgress: () => void
 
-  onClick: (callback: () => void) => void
+  onClick: (callback?: () => void) => void
+  offClick: (callback?: () => void) => void
   setText: (value: string) => void
 
   hideProgress: () => void
