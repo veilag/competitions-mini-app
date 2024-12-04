@@ -58,18 +58,6 @@ const StaffView = () => {
             <Button onClick={showQrScanner} className="w-full text-base">Открыть</Button>
           </div>
         </div>
-
-        <div className="mt-10 mb-5">
-          <div className="mt-5">
-            <p className="font-medium text-lg">Объявление победителей</p>
-            <p className="mb-4">
-              Нажимая на кнопку ниже, вы переходите в режим объявления победителей.<br/><br/>
-              Этот режим открывает ТОЛЬКО ведущий на сцене. Несанкцианированное объявление пользователей записывается на сервере, поэтому кто решит поиграть пожалеет об этом
-            </p>
-
-            <Button className="w-full text-base">Перейти в режим</Button>
-          </div>
-        </div>
       </div>
     </div>
   )

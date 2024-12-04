@@ -48,7 +48,7 @@ const ConnectionWrapper = () => {
     (location.pathname === "/register" && "Регистрация") ||
     (location.pathname === "/profile" && "Добро пожаловать") ||
     (location.pathname === "/admin" && "Админ-панель") ||
-    (location.pathname === "/profile" && "Меню управляющего") || undefined
+    (location.pathname === "/staff" && "Меню управляющего") || undefined
 
   const color =
     (competitionState?.type === "registration" && "bg-blue-500") ||
@@ -94,6 +94,11 @@ const ConnectionWrapper = () => {
       }
 
       navigate("/awarding")
+    }
+
+    if (message.data.state.type !== "awarding") {
+      if (user?.role.type === "admin" || user?.role.type === "staff") return
+      navigate("/profile")
     }
   }
 

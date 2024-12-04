@@ -5,6 +5,7 @@ import ProfileView from "@/views/ProfileView.tsx";
 import AdminView from "@/views/AdminView.tsx";
 import StaffView from "@/views/StaffView.tsx";
 import AwardingView from "@/views/AwardingView.tsx";
+import AwardingStaffView from "@/views/AwardingStaffView.tsx";
 
 const router = createBrowserRouter([
   {
@@ -30,6 +31,10 @@ const router = createBrowserRouter([
       {
         path: "/awarding",
         element: <AwardingView />
+      },
+      {
+        path: "/staff_awarding",
+        element: <AwardingStaffView />
       }
     ]
   }
