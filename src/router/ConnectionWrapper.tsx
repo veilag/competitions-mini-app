@@ -104,7 +104,11 @@ const ConnectionWrapper = () => {
         return
       }
 
-      navigate("/profile")
+      if (!user) {
+        navigate("/register")
+      } else {
+        navigate("/profile")
+      }
     }
   }
 
