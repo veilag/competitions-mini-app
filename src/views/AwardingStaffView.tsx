@@ -2,7 +2,7 @@ import {Button} from "@/components/ui/button.tsx";
 
 const AwardingStaffView = () => {
   return (
-    <div className="mt-10 mb-5">
+    <div className="mt-4 px-4 relative z-10">
       <div className="mt-5">
         <p className="font-medium text-lg">Объявление победителей</p>
         <p className="mb-4">
@@ -14,7 +14,7 @@ const AwardingStaffView = () => {
           <p className="text-neutral-400 text-sm">Олимпиада</p>
           <p>Искусственный интеллект</p>
 
-          <div>
+          <div className="flex flex-col gap-2">
             <Button>Объявить места</Button>
             <Button>Объявить номинации</Button>
           </div>
@@ -24,7 +24,7 @@ const AwardingStaffView = () => {
           <p className="text-neutral-400 text-sm">Олимпиада</p>
           <p>Программные решения</p>
 
-          <div>
+          <div className="flex flex-col gap-2">
             <Button>Объявить места</Button>
             <Button>Объявить номинации</Button>
           </div>
@@ -34,7 +34,7 @@ const AwardingStaffView = () => {
           <p className="text-neutral-400 text-sm">Олимпиада</p>
           <p>Системное администрирование</p>
 
-          <div>
+          <div className="flex flex-col gap-2">
             <Button>Объявить места</Button>
             <Button>Объявить номинации</Button>
           </div>

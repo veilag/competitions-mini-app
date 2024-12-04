@@ -48,6 +48,7 @@ const ConnectionWrapper = () => {
     (location.pathname === "/register" && "Регистрация") ||
     (location.pathname === "/profile" && "Добро пожаловать") ||
     (location.pathname === "/admin" && "Админ-панель") ||
+    (location.pathname === "/staff_awarding" && "Меню управляющего") ||
     (location.pathname === "/staff" && "Меню управляющего") || undefined
 
   const color =
