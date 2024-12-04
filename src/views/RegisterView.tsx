@@ -1,4 +1,4 @@
-import {useEffect, useRef, useState} from "react";
+import {useCallback, useEffect, useRef, useState} from "react";
 import {Label} from "@/components/ui/label.tsx";
 import {Input} from "@/components/ui/input.tsx";
 import {
@@ -26,6 +26,28 @@ const RegisterView = () => {
     `${WS_ROOT}/connect_user?token=${encodeURIComponent(webapp.initData)}`,
     {share: true}
   )
+
+  const onMainButtonClick = useCallback(() => {
+    if (nameRef.current?.value === "" || surnameRef.current?.value === "") {
+      webapp.showPopup({
+        message: "Заполните все поля! Не забудьте выбрать олимпиаду",
+      });
+      return;
+    }
+
+    sendJsonMessage({
+      event: "USERS:REGISTER",
+      data: {
+        name: nameRef.current?.value,
+        surname: surnameRef.current?.value,
+        role_id: roleId,
+        competition_id: roleId === 2 ? competitionId : null
+      },
+    });
+
+    webapp.HapticFeedback.impactOccurred("light");
+    webapp.MainButton.showProgress();
+  }, [competitionId, roleId]);
 
   const changeRole = (id: number) => {
     setRoleId(id)
@@ -56,30 +78,11 @@ const RegisterView = () => {
   }, [lastJsonMessage])
 
   useEffect(() => {
-    webapp.MainButton.onClick(() => {
-      if (nameRef.current?.value === "" || surnameRef.current?.value === "") {
-        webapp.showPopup({
-          message: "Заполните все поля! Не забудьте выбрать олимпиаду"
-        })
-        return
-      }
-
-      sendJsonMessage({
-        event: "USERS:REGISTER",
-        data: {
-          name: nameRef.current?.value,
-          surname: surnameRef.current?.value,
-          role_id: roleId,
-          competition_id: competitionId,
-        }
-      })
-
-      webapp.HapticFeedback.impactOccurred("light")
-      webapp.MainButton.showProgress()
-    })
-
-    return () => webapp.MainButton.offClick()
-  }, [competitionId, roleId])
+    webapp.MainButton.onClick(onMainButtonClick)
+    return () => {
+      webapp.MainButton.offClick(onMainButtonClick)
+    }
+  }, [onMainButtonClick])
 
   useEffect(() => {
     impactDoubleHaptic("medium")
