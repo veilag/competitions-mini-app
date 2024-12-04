@@ -35,6 +35,9 @@ const ConnectionWrapper = () => {
           data: null,
         })
       },
+      onError: event => {
+        console.log(event)
+      },
       onClose: () => {
         impactDoubleHaptic("heavy")
         setConnectionClosed(true)
@@ -89,11 +92,6 @@ const ConnectionWrapper = () => {
 
     if (message.data.state.type === "awarding") {
       if (user?.role.type === "admin") return
-      if (user?.role.type === "staff") {
-        navigate("/staff_awarding")
-        return
-      }
-
       navigate("/awarding")
     }
 
@@ -121,12 +119,9 @@ const ConnectionWrapper = () => {
       .onEvent("COMPETITIONS:GET_STATE:RESULT", onStateChange)
   }, [lastJsonMessage])
 
-  console.log(webapp.platform)
-
   useEffect(() => {
     if (webapp.initData === "") return
-    if (webapp.platform !== "macos" && webapp.platform !== "windows" && webapp.platform !== "web") {
-      webapp.expand()
+    if (webapp.platform !== "macos" && webapp.platform !== "windows" && webapp.platform !== "web" && webapp.platform !== "weba") {
       webapp?.requestFullscreen()
     }
 
@@ -171,7 +166,7 @@ const ConnectionWrapper = () => {
     </div>
 
     {competitionState && (
-      <div onClick={() => copyToClipboard((webapp.initData))} className={`w-full text-white py-2 px-4 ${color}`}>
+      <div onClick={() => copyToClipboard(webapp.initData)} className={`w-full text-white py-2 px-4 ${color}`}>
         <HyperText
           text={competitionState.name}
         />

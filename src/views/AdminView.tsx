@@ -8,8 +8,11 @@ import {useEffect, useRef, useState} from "react";
 import webapp from "@/webapp";
 import {JsonMessageHandler} from "@/utils";
 import {EventMessage, UserRegisterResult, UserSetPlaceResultEvent} from "@/types/sockets.ts";
+import {useNavigate} from "react-router-dom";
 
 const AdminView = () => {
+  const navigate = useNavigate()
+
   const [selectedStateId, setSelectedStateId] = useState<number>(0)
   const [selectedRoleId, setSelectedRoleId] = useState<number>(5)
 
@@ -165,13 +168,37 @@ const AdminView = () => {
             <Button onClick={() => changeStatus()} className="w-full">Изменить состояние</Button>
           </div>
 
+          <div className="mt-14">
+            <p className="font-medium text-lg">Объявление победителей</p>
+
+            <div className="mt-4">
+              <p>Системное администрирование</p>
+              <Button onClick={() => navigate("/admin/winners/3")} className="w-full mt-2">Объявить победителей</Button>
+              <Button variant="outline" onClick={() => navigate("/admin/set_winners/3")} className="w-full mt-2">Установить победителей</Button>
+              <Button variant="outline" onClick={() => navigate("/admin/set_nominations/3")} className="w-full mt-2">Установить номинантов</Button>
+            </div>
+
+            <div className="mt-6">
+              <p>Программные решения</p>
+              <Button onClick={() => navigate("/admin/winners/2")} className="w-full mt-2">Объявить победителей</Button>
+              <Button variant="outline" onClick={() => navigate("/admin/set_winners/2")} className="w-full mt-2">Установить победителей</Button>
+              <Button variant="outline" onClick={() => navigate("/admin/set_nominations/2")} className="w-full mt-2">Установить номинантов</Button>
+            </div>
+
+            <div className="mt-6">
+              <p>Искусственный интеллект</p>
+              <Button onClick={() => navigate("/admin/winners/1")} className="w-full mt-2">Объявить победителей</Button>
+              <Button variant="outline" onClick={() => navigate("/admin/set_winners/1")} className="w-full mt-2">Установить победителей</Button>
+              <Button variant="outline" onClick={() => navigate("/admin/set_nominations/1")} className="w-full mt-2">Установить номинантов</Button>
+            </div>
+          </div>
+
           <div className="mt-5">
             <p className="font-medium text-lg">Разное</p>
             <p className="mb-4">Установить пользователя "На месте"</p>
             <Button onClick={showQrScanner} className="w-full">Сканировать QR-код</Button>
           </div>
         </div>
-
       </div>
     </div>
   )
