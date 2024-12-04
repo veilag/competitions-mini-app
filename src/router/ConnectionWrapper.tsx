@@ -21,8 +21,8 @@ const ConnectionWrapper = () => {
   const location = useLocation()
 
   const [competitionState, setCompetitionState] = useState<CompetitionState | undefined>(undefined)
-
-
+  const [connectionClosed, setConnectionClosed] = useState<boolean>(false)
+  
   const { lastJsonMessage, sendJsonMessage } = useWebSocket<EventMessage | null>(
     `${WS_ROOT}/connect_user?token=${encodeURIComponent(
       webapp.initData
@@ -34,9 +34,12 @@ const ConnectionWrapper = () => {
           data: null,
         })
       },
+      onClose: () => {
+        setConnectionClosed(true)
+      },
       share: true
     }
-  );
+  )
 
   const pageStatus =
     (location.pathname === "/" && "Загрузка") ||
@@ -143,7 +146,17 @@ const ConnectionWrapper = () => {
       </div>
     )}
 
-    <Outlet/>
+    {connectionClosed && (
+      <div className="w-full text-white py-2 px-4 bg-red-500">
+        <HyperText
+          text="Соединение разорвано"
+        />
+      </div>
+    )}
+
+    {!connectionClosed && (
+      <Outlet/>
+    )}
   </>
 }
 
