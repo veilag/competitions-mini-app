@@ -98,7 +98,7 @@ const ConnectionWrapper = () => {
     }
 
     if (message.data.state.type !== "awarding") {
-      if (user?.role.type === "admin" || user?.role.type === "staff") return
+      if (user?.role.type === "admin") return
       navigate("/profile")
     }
   }
