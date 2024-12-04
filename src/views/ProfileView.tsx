@@ -25,7 +25,7 @@ const ProfileView = () => {
     if (lastJsonMessage === null) return
 
     new JsonMessageHandler(lastJsonMessage)
-      .onEvent("USERS:PLACE_UPDATE", onUserPlaceUpdate)
+      .onEvent("USERS:IN_PLACE_UPDATE", onUserPlaceUpdate)
   }, [lastJsonMessage])
 
   useEffect(() => {

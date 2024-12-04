@@ -35,7 +35,7 @@ interface GetCompetitionsStateResultEvent {
 }
 
 interface UserPlaceUpdateEvent {
-  event: "USERS:PLACE_UPDATE"
+  event: "USERS:IN_PLACE_UPDATE"
 }
 
 interface UserRegisterResult {
