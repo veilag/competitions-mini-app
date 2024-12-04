@@ -17,41 +17,40 @@ const getRandomInt = (max: number) => Math.floor(Math.random() * max);
 const HyperText = forwardRef(function HyperText(
   {
     text,
-    duration = 800,
     className,
     onAnimationEnd,
   }: HyperTextProps
 ) {
   const [displayText, setDisplayText] = useState(text.split(""));
-  const interations = useRef(0);
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const iterations = useRef(0);
 
   const startAnimation = () => {
-    interations.current = 0;
-    clearInterval(intervalRef.current!); // Clear any ongoing interval
-    intervalRef.current = setInterval(() => {
-      if (interations.current < text.length) {
+    iterations.current = 0;
+
+    const animate = () => {
+      if (iterations.current < text.length) {
         setDisplayText((t) =>
           t.map((l, i) =>
             l === " "
               ? l
-              : i <= interations.current
+              : i <= iterations.current
                 ? text[i]
-                : alphabets[getRandomInt(26)]
+                : alphabets[getRandomInt(32)]
           )
         );
-        interations.current += 0.1;
-      } else {
-        clearInterval(intervalRef.current!);
-        if (onAnimationEnd) onAnimationEnd();
+        iterations.current += 0.5;
+        requestAnimationFrame(animate);
+      } else if (onAnimationEnd) {
+        onAnimationEnd();
       }
-    }, duration / (text.length * 10));
+    };
+
+    animate();
   };
 
   useEffect(() => {
     setDisplayText(text.split(""));
     startAnimation();
-    return () => clearInterval(intervalRef.current!);
   }, [text]);
 
   return (

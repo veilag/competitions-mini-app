@@ -34,10 +34,13 @@ interface WebApp {
   HapticFeedback: HapticFeedback
   MainButton: BottomButton
 
+  platform: string
+
   showPopup: (params: PopupParams, callback?: (buttonId: string) => void) => void
   showScanQrPopup: (params: ScanQrPopupParams, callback: (value: string) => void) => void
-  requestFullscreen: () => void
 
+  requestFullscreen: () => void
+  expand: () => void
   close: () => void
 }
 

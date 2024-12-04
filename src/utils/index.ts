@@ -29,8 +29,22 @@ const showMainButton = (title: string) => {
   webapp.MainButton.show()
 }
 
+const copyToClipboard = (text: string) => {
+  navigator.clipboard.writeText(text)
+    .then(() => {
+      webapp.showPopup({
+        message: "Токен скопирован"
+      })
+    }, () => {
+      webapp.showPopup({
+        message: "Ошибка копирования"
+      })
+    })
+}
+
 export {
   impactDoubleHaptic,
   showMainButton,
+  copyToClipboard,
   JsonMessageHandler
 }

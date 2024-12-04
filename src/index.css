@@ -18,7 +18,7 @@
   width: 100%;
 }
 
-.container {
+.safe_content {
   padding-top: calc(var(--tg-content-safe-area-inset-top) + var(--tg-safe-area-inset-top));
 }
 

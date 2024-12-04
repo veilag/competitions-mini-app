@@ -57,6 +57,11 @@ const ProfileView = () => {
         {user?.in_place && (
           <div className="mt-5">
             <p className="font-medium text-lg">Привет, {user.name}</p>
+
+            <p className="mb-4">
+              Здесь ты сможешь посмотреть на каком сейчас этапе проходят олимпиады.<br/><br/>
+              Во время награждения ты сможешь посмотреть победителя, поэтому не забудь сюда зайти!
+            </p>
           </div>
         )}
       </div>

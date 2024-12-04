@@ -10,12 +10,13 @@ import {
   GetCompetitionsStateResultEvent,
   UserGetMeResultEvent
 } from "@/types/sockets.ts";
-import {JsonMessageHandler} from "@/utils";
+import {copyToClipboard, impactDoubleHaptic, JsonMessageHandler} from "@/utils";
 import {CompetitionState} from "@/types/competitions.ts";
+import webapp from "@/webapp";
 
-const webapp = window.Telegram.WebApp
 
 const ConnectionWrapper = () => {
+  const user = useUserStore(state => state.user)
   const setUser = useUserStore(state => state.setUser)
   const navigate = useNavigate()
   const location = useLocation()
@@ -35,6 +36,7 @@ const ConnectionWrapper = () => {
         })
       },
       onClose: () => {
+        impactDoubleHaptic("heavy")
         setConnectionClosed(true)
       },
       share: true
@@ -83,6 +85,16 @@ const ConnectionWrapper = () => {
     setCompetitionState(message.data.state)
     webapp.HapticFeedback
       .impactOccurred("medium")
+
+    if (message.data.state.type === "awarding") {
+      if (user?.role.type === "admin") return
+      if (user?.role.type === "staff") {
+        navigate("/staff_awarding")
+        return
+      }
+
+      navigate("/awarding")
+    }
   }
 
   useEffect(() => {
@@ -94,10 +106,15 @@ const ConnectionWrapper = () => {
       .onEvent("COMPETITIONS:GET_STATE:RESULT", onStateChange)
   }, [lastJsonMessage])
 
+  console.log(webapp.platform)
+
   useEffect(() => {
     if (webapp.initData === "") return
+    if (webapp.platform !== "macos" && webapp.platform !== "windows" && webapp.platform !== "web") {
+      webapp.expand()
+      webapp?.requestFullscreen()
+    }
 
-    webapp?.requestFullscreen()
     webapp.HapticFeedback.impactOccurred("medium")
 
     sendJsonMessage({
@@ -123,7 +140,7 @@ const ConnectionWrapper = () => {
   }
 
   return <>
-    <div className="container px-4 pb-5 w-full bg-black text-white">
+    <div className="safe_content px-4 pb-5 w-full bg-black text-white">
       <div className="pt-4">
         <HyperText
           className="font-bold text-3xl mb-1"
@@ -139,7 +156,7 @@ const ConnectionWrapper = () => {
     </div>
 
     {competitionState && (
-      <div className={`w-full text-white py-2 px-4 ${color}`}>
+      <div onClick={() => copyToClipboard((webapp.initData))} className={`w-full text-white py-2 px-4 ${color}`}>
         <HyperText
           text={competitionState.name}
         />
