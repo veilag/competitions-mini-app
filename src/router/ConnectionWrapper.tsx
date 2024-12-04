@@ -35,9 +35,6 @@ const ConnectionWrapper = () => {
           data: null,
         })
       },
-      onError: event => {
-        console.log(event)
-      },
       onClose: () => {
         impactDoubleHaptic("heavy")
         setConnectionClosed(true)
