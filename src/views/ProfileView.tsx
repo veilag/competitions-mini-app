@@ -9,6 +9,7 @@ import {EventMessage} from "@/types/sockets.ts";
 
 const ProfileView = () => {
   const user = useUserStore(state => state.user)
+  const setUserInPlace = useUserStore(state => state.setUserInPlace)
 
   const { lastJsonMessage } = useWebSocket<EventMessage | null>(
     `${WS_ROOT}/connect_user?token=${encodeURIComponent(webapp.initData)}`,
@@ -19,7 +20,7 @@ const ProfileView = () => {
 
   const onUserPlaceUpdate = () => {
     webapp.HapticFeedback.impactOccurred("medium")
-    webapp.close()
+    setUserInPlace()
   }
 
   useEffect(() => {
