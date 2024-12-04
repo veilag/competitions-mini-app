@@ -18,7 +18,6 @@ const ProfileView = () => {
   )
 
   const onUserPlaceUpdate = () => {
-    webapp.HapticFeedback.impactOccurred("medium")
     webapp.close()
   }
 
